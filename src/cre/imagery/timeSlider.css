@@ -1,0 +1,115 @@
+/* Historical imagery time slider and swipe divider: compact controls for the dossier panel footer, readable in the app's dark chrome. */
+.cre-timeslider {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+  line-height: 1.35;
+  color: inherit;
+}
+
+.cre-timeslider__title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.cre-timeslider__status,
+.cre-timeslider__caption,
+.cre-timeslider__credit {
+  opacity: 0.8;
+}
+
+.cre-timeslider__date {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.cre-timeslider__range {
+  width: 100%;
+  margin: 0;
+  accent-color: #d4a84b;
+}
+
+.cre-timeslider__ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+
+.cre-timeslider__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cre-timeslider__btn {
+  flex: 1 1 auto;
+  min-width: 64px;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.cre-timeslider__btn:hover,
+.cre-timeslider__btn:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.cre-timeslider__btn[aria-pressed='true'] {
+  border-color: #d4a84b;
+  background: rgba(212, 168, 75, 0.22);
+}
+
+.cre-timeslider__credit {
+  font-size: 10px;
+}
+
+.cre-timeslider__credit a {
+  color: inherit;
+}
+
+.cre-timeslider__divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 4px;
+  margin-left: -2px;
+  background: #d4a84b;
+  cursor: ew-resize;
+  z-index: 5;
+  touch-action: none;
+}
+
+.cre-timeslider__divider[hidden] {
+  display: none;
+}
+
+.cre-timeslider__side {
+  position: absolute;
+  top: 12px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.cre-timeslider__side--left {
+  right: 10px;
+}
+
+.cre-timeslider__side--right {
+  left: 10px;
+}

@@ -1,0 +1,29 @@
+node_modules
+dist
+# Credential files. `.env` alone is not enough: Vite's loadEnv (see
+# server/standalone/vite.config.js) and scripts/setup-doctor.mjs both read the
+# full dotenv ladder — .env, .env.local, .env.<mode> and .env.<mode>.local —
+# so a key placed in any of them is live for the app. Only .env was ignored,
+# leaving the other three committable. .env.example is the tracked template.
+.env
+.env.*
+!.env.example
+*.log
+screenshots/
+qa-shots/
+output/
+.gev-logs/
+.gev-cache/
+.DS_Store
+.gstack/
+3d-models/
+pinokio/ENVIRONMENT
+pinokio/.installed
+# Your own chain-logo files (see local-brand-marks/README.txt). The public
+# repo ships no retailer logo artwork; nothing here is ever committed.
+/local-brand-marks/*
+!/local-brand-marks/README.txt
+
+# Local terms list for scripts/privacy-gate.mjs (see its header). Never
+# committed: the whole point is that private terms live outside the repo.
+.privacy-terms.local

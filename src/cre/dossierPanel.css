@@ -1,0 +1,1801 @@
+/* CRE mode chrome and the site dossier panel: a clean, legible real estate card in the left rail; spy chrome is hidden only under html[data-cre-mode='cre']. */
+
+html[data-cre-mode='cre'] {
+  --cre-navy: #0f2a4a;
+  --cre-navy-2: #16375e;
+  --cre-gold: #c9a227;
+  --cre-ink: #1f2937;
+  --cre-muted: #5b6472;
+  --cre-line: #e3e6eb;
+  --cre-paper: #fbfaf7;
+  --cre-card: #ffffff;
+  --cre-ok: #15803d;
+  --cre-warn: #b45309;
+  --cre-key: #1d4ed8;
+  --cre-empty: #475569;
+}
+
+/* Upstream chrome is hidden by the style element mode.js installs from
+   CRE_HIDDEN_CHROME (one list, unit tested). The HUD is switched off through
+   the visual settings owner instead, so H still works. */
+
+/* The rail starts under the title and stops above the map attribution in
+   CRE mode, so the dossier gets the full height instead of a centered slot. */
+html[data-cre-mode='cre'] #left-panel-stack {
+  top: 104px !important;
+  bottom: 64px !important;
+  width: 400px;
+}
+
+/* At 1200px+ the rail has room to stop wrapping tile units and figures
+   mid-word ("USD/mo nth"); widen the panel and let the tile grid pick up
+   a 3rd (or 4th, on a very wide window) column on its own. */
+@media (min-width: 1200px) {
+  html[data-cre-mode='cre'] #left-panel-stack {
+    width: 520px;
+  }
+}
+
+html[data-cre-mode='cre'] #left-panel-stack > #dossier-panel {
+  order: 0;
+}
+
+#dossier-panel.cre-dossier {
+  position: relative;
+  box-sizing: border-box;
+  width: 400px;
+  min-height: 0;
+  flex: 0 1 auto;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  background: var(--cre-paper, #fbfaf7);
+  color: var(--cre-ink, #1f2937);
+  border-radius: 10px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
+  overflow: hidden;
+  font-family:
+    Inter,
+    -apple-system,
+    'Segoe UI',
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+#dossier-panel .cre-dossier-head {
+  flex: 0 0 auto;
+  padding: 12px 14px 10px;
+  background: linear-gradient(180deg, var(--cre-navy), var(--cre-navy-2));
+  color: #fff;
+  border-bottom: 3px solid var(--cre-gold);
+}
+
+#dossier-panel .cre-dossier-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+#dossier-panel .cre-dossier-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cre-gold);
+}
+
+#dossier-panel .cre-dossier-collapse {
+  font: inherit;
+  font-size: 11px;
+  color: #dbe4ef;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-dossier-title-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#dossier-panel .cre-dossier-keys {
+  font: inherit;
+  font-size: 11px;
+  color: #dbe4ef;
+  background: transparent;
+  border: 0;
+  padding: 2px 4px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-dossier-keys[hidden] {
+  display: none;
+}
+
+#dossier-panel .cre-dossier-search {
+  display: flex;
+}
+
+/* At a glance: the investor's first questions, above the sections. */
+#dossier-panel .cre-glance {
+  margin: 0 0 10px;
+  background: var(--cre-card);
+  border: 1px solid var(--cre-line);
+  border-left: 4px solid var(--cre-gold);
+  border-radius: 8px;
+  padding: 8px 10px 4px;
+}
+
+#dossier-panel .cre-glance[hidden] {
+  display: none;
+}
+
+/* Headline tiles: the strongest evidence, above every role tab's cards, so
+   the acquisition thesis never hides behind a "no data" card further down.
+   2 columns at phone width, 4 at desktop; tabular numerals so figures align. */
+#dossier-panel .cre-tiles {
+  margin: 0 0 10px;
+}
+
+#dossier-panel .cre-tiles[hidden] {
+  display: none;
+}
+
+#dossier-panel .cre-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+/* 4 columns only once the panel has widened to 520px (1200px+ viewport):
+   with 8 tiles, 2 or 4 columns fill every row evenly (3 leaves a half-empty
+   last row). Each column still has enough room for a figure and its unit
+   never to wrap mid-word (e.g. "$1,858/mo"). The default 400px rail stays
+   2 columns, same as mobile (<=720px viewport never reaches this rule). */
+@media (min-width: 1200px) {
+  #dossier-panel .cre-tiles-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  #dossier-panel.cre-dossier {
+    width: 520px;
+  }
+}
+
+#dossier-panel .cre-tile {
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid var(--cre-line);
+  border-radius: 7px;
+  background: var(--cre-card);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#dossier-panel .cre-tile-label {
+  color: var(--cre-muted);
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+#dossier-panel .cre-tile-value {
+  color: var(--cre-navy);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+#dossier-panel .cre-tile-value-muted {
+  color: var(--cre-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#dossier-panel .cre-tile-partial-badge {
+  margin-left: 5px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: rgba(180, 83, 9, 0.12);
+  color: var(--cre-warn);
+  font-size: 9px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+#dossier-panel .cre-tile-meta {
+  color: var(--cre-muted);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+#dossier-panel .cre-tile-key-action {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 5px 8px;
+  border: 1px solid var(--cre-key);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--cre-key);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-tile-key-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#dossier-panel .cre-tile-unavailable .cre-tile-label,
+#dossier-panel .cre-tile-needs-key .cre-tile-label {
+  color: var(--cre-muted);
+}
+
+/* No-data group: demoted cards stay reachable, collapsed by default, so an
+   empty crime card never leads a role tab that has real evidence elsewhere. */
+#dossier-panel .cre-insight-nodata {
+  margin-top: 4px;
+  padding: 2px 0 0;
+}
+
+#dossier-panel .cre-insight-nodata > summary {
+  cursor: pointer;
+  color: var(--cre-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 2px;
+  list-style: none;
+}
+
+#dossier-panel .cre-insight-nodata > summary::-webkit-details-marker {
+  display: none;
+}
+
+#dossier-panel .cre-insight-nodata > summary::before {
+  content: '\25b8 ';
+}
+
+#dossier-panel .cre-insight-nodata[open] > summary::before {
+  content: '\25be ';
+}
+
+#dossier-panel .cre-insight-nodata .cre-insight-grid {
+  margin-top: 4px;
+}
+
+#dossier-panel .cre-glance-title {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cre-navy);
+}
+
+#dossier-panel .cre-glance-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#dossier-panel .cre-glance-line + .cre-glance-line {
+  border-top: 1px solid var(--cre-line);
+}
+
+#dossier-panel .cre-glance-link {
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-glance-link:hover .cre-glance-text,
+#dossier-panel .cre-glance-link:focus-visible .cre-glance-text {
+  text-decoration: underline;
+}
+
+#dossier-panel .cre-glance-label {
+  color: var(--cre-muted);
+  font-size: 12px;
+}
+
+#dossier-panel .cre-glance-text {
+  min-width: 0;
+  color: var(--cre-ink);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+#dossier-panel .cre-glance-key {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+  padding: 7px 0;
+}
+
+#dossier-panel .cre-glance-key-content {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+#dossier-panel .cre-glance-key-action,
+#dossier-panel .cre-section-key-notice,
+#dossier-panel .cre-key-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+#dossier-panel .cre-key-action {
+  min-height: 30px;
+  padding: 4px 8px;
+  color: var(--cre-navy);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  background: #eef2f7;
+  border: 1px solid #cbd2dc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-key-action:disabled {
+  color: #687382;
+  cursor: default;
+}
+
+#dossier-panel .cre-section-key-notice {
+  justify-content: space-between;
+  color: var(--cre-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+#dossier-panel .cre-dossier-approx,
+#dossier-panel .cre-glance-warning {
+  margin: 4px 0 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+  font-size: 13px;
+}
+
+#dossier-panel .cre-glance-warning {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#dossier-panel .cre-glance-warning .cre-glance-label,
+#dossier-panel .cre-glance-warning .cre-glance-text {
+  color: #9a3412;
+}
+
+#dossier-panel .cre-glance-status .cre-glance-text {
+  color: var(--cre-empty);
+  font-weight: 400;
+  font-style: italic;
+}
+
+html[data-cre-mode='cre'] #location-search.cre-address-input {
+  position: static;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 38px;
+  margin: 0;
+  padding: 0 12px;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  font:
+    500 14px Inter,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--cre-ink);
+  background: #fff;
+  border: 1px solid #c7ced8;
+  border-radius: 6px;
+  box-shadow: none;
+  outline: none;
+  pointer-events: auto;
+}
+
+html[data-cre-mode='cre'] #location-search.cre-address-input::placeholder {
+  color: #8a93a0;
+}
+
+html[data-cre-mode='cre'] #location-search.cre-address-input:focus {
+  border-color: var(--cre-gold);
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.35);
+}
+
+html[data-cre-mode='cre'] #location-search.cre-address-input.searching {
+  background: #fff
+    radial-gradient(circle at center, var(--cre-navy) 35%, transparent 40%)
+    no-repeat right 12px center / 10px 10px;
+}
+
+#dossier-panel .cre-dossier-address {
+  margin: 10px 0 4px;
+  font:
+    600 15px/1.25 Inter,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  color: #fff;
+  letter-spacing: normal;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+
+/* The compact-bar "Search" toggle is a mobile-only control (see the
+   max-width: 720px block below), where the header collapses once a site
+   has loaded. On every wider screen the full header (search box, meta,
+   actions) is already showing, so this control has nothing to toggle and
+   must never render -- an unstyled "Search" button otherwise appeared
+   under the address on desktop even with the header expanded. */
+#dossier-panel .cre-mobile-search-toggle {
+  display: none;
+}
+
+#dossier-panel .cre-dossier-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  margin: 0;
+  font-size: 12px;
+  color: #c9d5e3;
+}
+
+#dossier-panel .cre-meta-item {
+  display: flex;
+  gap: 4px;
+}
+
+#dossier-panel .cre-meta-item dt {
+  color: #9fb2c8;
+}
+
+#dossier-panel .cre-meta-item dd {
+  margin: 0;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+#dossier-panel .cre-dossier-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+#dossier-panel .cre-dossier-progress {
+  flex: 1 0 100%;
+  font-size: 12px;
+  color: #c9d5e3;
+}
+
+#dossier-panel .cre-btn {
+  font:
+    600 12px Inter,
+    sans-serif;
+  color: var(--cre-navy);
+  background: #fff;
+  border: 0;
+  border-radius: 5px;
+  padding: 5px 10px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+#dossier-panel .cre-btn-primary {
+  color: #fff;
+  background: var(--cre-navy);
+  border: 1px solid var(--cre-navy);
+}
+
+#dossier-panel .cre-btn:hover:not(:disabled),
+#dossier-panel .cre-workspace-btn:hover:not(:disabled),
+#dossier-panel .cre-candidate-delete:hover:not(:disabled) {
+  background-color: #e8edf3;
+}
+
+#dossier-panel .cre-btn-primary:hover:not(:disabled) {
+  background-color: var(--cre-navy-2);
+}
+
+#dossier-panel button:focus-visible,
+#dossier-panel select:focus-visible,
+#dossier-panel input:focus-visible {
+  outline: 2px solid var(--cre-gold);
+  outline-offset: 2px;
+}
+
+#dossier-panel .cre-dossier-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 12px 14px;
+}
+
+#dossier-panel.collapsed .cre-dossier-body,
+#dossier-panel.collapsed .cre-dossier-meta,
+#dossier-panel.collapsed .cre-dossier-actions {
+  display: none;
+}
+
+#dossier-panel .cre-dossier-message {
+  margin: 0 0 10px;
+  color: var(--cre-muted);
+}
+
+#dossier-panel .cre-message-no-match,
+#dossier-panel .cre-message-outside-us,
+#dossier-panel .cre-message-error {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #9a3412;
+}
+
+/* Geocode mismatch actions (e.g. Marfa): two real buttons with spacing,
+   matching the panel's existing button conventions, not bare unstyled
+   <button> text stacked on top of each other. */
+#dossier-panel .cre-mismatch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 10px;
+}
+
+#dossier-panel .cre-mismatch-actions[hidden] {
+  display: none;
+}
+
+#dossier-panel .cre-mismatch-btn {
+  font:
+    600 12px Inter,
+    sans-serif;
+  color: #fff;
+  background: var(--cre-navy);
+  border: 1px solid var(--cre-navy);
+  border-radius: 6px;
+  padding: 8px 14px;
+  min-height: 36px;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-mismatch-btn:hover {
+  background-color: var(--cre-navy-2);
+}
+
+#dossier-panel .cre-mismatch-btn-secondary {
+  color: var(--cre-navy);
+  background: #fff;
+  border: 1px solid var(--cre-line);
+}
+
+#dossier-panel .cre-mismatch-btn-secondary:hover {
+  background-color: #e8edf3;
+}
+
+#dossier-panel .cre-section {
+  margin: 0 0 8px;
+  background: var(--cre-card);
+  border: 1px solid var(--cre-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#dossier-panel .cre-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: #f4f5f7;
+  border: 0;
+  border-bottom: 1px solid var(--cre-line);
+  cursor: pointer;
+}
+
+#dossier-panel .cre-section.closed .cre-section-head {
+  border-bottom: 0;
+}
+
+#dossier-panel .cre-section.closed .cre-section-body {
+  display: none;
+}
+
+#dossier-panel .cre-section-label {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--cre-navy);
+}
+
+#dossier-panel .cre-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+#dossier-panel .cre-badge-ready {
+  color: var(--cre-ok);
+  background: #ecfdf3;
+  border-color: #bbf7d0;
+}
+
+#dossier-panel .cre-badge-loading {
+  color: var(--cre-muted);
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+#dossier-panel .cre-badge-empty {
+  color: var(--cre-empty);
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+#dossier-panel .cre-badge-unavailable {
+  color: var(--cre-warn);
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+#dossier-panel .cre-badge-needs-key {
+  color: var(--cre-key);
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+#dossier-panel .cre-section-body {
+  padding: 6px 10px 8px;
+}
+
+#dossier-panel .cre-values {
+  margin: 0;
+}
+
+#dossier-panel .cre-value-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 1px solid #f0f1f4;
+}
+
+#dossier-panel .cre-value-row:last-child {
+  border-bottom: 0;
+}
+
+#dossier-panel .cre-value-row dt {
+  color: var(--cre-muted);
+}
+
+#dossier-panel .cre-value-row dd {
+  margin: 0;
+  text-align: right;
+}
+
+#dossier-panel .cre-value {
+  font-weight: 600;
+  color: var(--cre-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+#dossier-panel .cre-value-note {
+  margin-left: 4px;
+  font-size: 11.5px;
+  color: var(--cre-muted);
+}
+
+#dossier-panel .cre-section-note {
+  margin: 4px 0;
+  color: var(--cre-muted);
+}
+
+#dossier-panel .cre-section-source {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: #7a8391;
+}
+
+/* Rent trend sparkline (feature 2): last 36 months of Zillow ZORI, inline
+   SVG, no chart library. Colors are the same tokens as the rest of the
+   dossier chrome, so the chart follows light/dark automatically. */
+#dossier-panel .cre-rent-chart-wrap {
+  margin: 8px 0 4px;
+}
+
+#dossier-panel .cre-rent-chart {
+  display: block;
+  width: 100%;
+  height: 56px;
+}
+
+#dossier-panel .cre-rent-chart-line {
+  fill: none;
+  stroke: var(--cre-navy);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#dossier-panel .cre-rent-chart-dot {
+  fill: var(--cre-gold);
+  stroke: var(--cre-navy);
+  stroke-width: 0.75;
+}
+
+#dossier-panel .cre-rent-chart-caption {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--cre-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+#dossier-panel .cre-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+#dossier-panel .cre-section-source a {
+  color: var(--cre-key);
+  text-decoration: none;
+}
+
+#dossier-panel .cre-section-source a:hover {
+  text-decoration: underline;
+}
+
+/* Data served from cache past its refresh window: the age has to be as
+   visible as the timestamp, or the stamp reads as freshness it does not have. */
+#dossier-panel .cre-stale {
+  color: #d97706;
+  font-weight: 600;
+}
+
+/* Phone width: upstream splits the screen between the left stack and the
+   right rail, which drew DISPLAY, CCTV and CONTEXT over the dossier. In CRE
+   mode the dossier owns the column from under the header to above the dock;
+   the right rail is hidden (?mode=gev keeps it). */
+@media (max-width: 720px) {
+  /* Phones: the dossier is a bottom sheet over the lower portion, so the site
+     (placed in the upper part of the screen by the landing) stays visible,
+     and the map credit sits in the strip below the sheet. */
+  html[data-cre-mode='cre'] #left-panel-stack {
+    top: auto !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 30px !important;
+    width: auto;
+    max-height: 65vh;
+    transform: none !important;
+  }
+
+  #dossier-panel.cre-dossier {
+    width: 100%;
+    flex: 0 1 auto;
+    max-height: 65vh;
+  }
+
+  #dossier-panel .cre-dossier-head {
+    padding: 7px 10px 6px;
+  }
+
+  #dossier-panel .cre-dossier-title-row {
+    margin-bottom: 4px;
+  }
+
+  #dossier-panel .cre-dossier-address {
+    margin: 5px 0 2px;
+    font-size: 13.5px;
+    line-height: 1.2;
+  }
+
+  /* Once a site has loaded on a phone, the header collapses to a single
+     compact bar (address + Search) so data is visible in the first
+     screen, instead of the search box, meta and action row pushing every
+     result below the fold. Tap Search to expand the full header back. */
+  #dossier-panel.cre-site-loaded .cre-dossier-head {
+    position: relative;
+    padding-bottom: 4px;
+  }
+
+  #dossier-panel.cre-site-loaded .cre-dossier-address {
+    padding-right: 68px;
+  }
+
+  #dossier-panel.cre-site-loaded .cre-mobile-search-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    min-height: 32px;
+    padding: 4px 10px;
+    font: 600 11px Inter, sans-serif;
+    color: #dbe4ef;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  #dossier-panel.cre-site-loaded .cre-dossier-title-row,
+  #dossier-panel.cre-site-loaded .cre-dossier-search,
+  #dossier-panel.cre-site-loaded .cre-dossier-meta,
+  #dossier-panel.cre-site-loaded .cre-dossier-actions {
+    display: none;
+  }
+
+  /* Expanded, the title row's own Hide button reappears at this same
+     top-right corner (title-row is `justify-content: space-between`), so
+     the absolutely-positioned Search toggle above would sit on top of it.
+     Hide the Search toggle while expanded; tapping it again to collapse is
+     unnecessary once Hide is visible and does the same job. */
+  #dossier-panel.cre-site-loaded .cre-dossier-head.cre-head-expanded .cre-mobile-search-toggle {
+    display: none;
+  }
+
+  #dossier-panel.cre-site-loaded .cre-dossier-head.cre-head-expanded .cre-dossier-title-row,
+  #dossier-panel.cre-site-loaded .cre-dossier-head.cre-head-expanded .cre-dossier-search,
+  #dossier-panel.cre-site-loaded .cre-dossier-head.cre-head-expanded .cre-dossier-meta,
+  #dossier-panel.cre-site-loaded .cre-dossier-head.cre-head-expanded .cre-dossier-actions {
+    display: flex;
+  }
+
+  #dossier-panel .cre-dossier-meta {
+    gap: 1px 10px;
+    font-size: 11px;
+  }
+
+  #dossier-panel .cre-dossier-actions {
+    gap: 5px;
+    margin-top: 5px;
+  }
+
+  #dossier-panel .cre-dossier-progress {
+    flex: 0 1 auto;
+    font-size: 11px;
+  }
+
+  #dossier-panel .cre-dossier-body {
+    padding: 6px 9px 10px;
+  }
+
+  #dossier-panel .cre-dossier-views {
+    margin-bottom: 5px;
+    padding-bottom: 4px;
+  }
+
+  #dossier-panel .cre-glance {
+    margin-bottom: 6px;
+    padding: 5px 8px 3px;
+  }
+
+  #dossier-panel .cre-glance-title {
+    margin-bottom: 2px;
+    font-size: 11px;
+  }
+
+  #dossier-panel .cre-glance-link {
+    grid-template-columns: minmax(88px, 35%) minmax(0, 1fr);
+    gap: 6px;
+    padding: 5px 0;
+  }
+
+  #dossier-panel .cre-glance-label,
+  #dossier-panel .cre-glance-text {
+    font-size: 12.5px;
+    line-height: 1.35;
+  }
+
+  #dossier-panel .cre-glance-key {
+    grid-template-columns: minmax(88px, 35%) minmax(0, 1fr);
+    gap: 6px;
+    padding: 5px 0;
+  }
+
+  #dossier-panel .cre-key-action {
+    min-height: 38px;
+  }
+
+  #dossier-panel .cre-radius-scope {
+    margin: 4px 0 0;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+  html[data-cre-mode='cre'] body #cesium-credits {
+    bottom: 6px !important;
+    left: 10px !important;
+    right: auto !important;
+    max-width: calc(100vw - 20px) !important;
+  }
+}
+
+/* Imagery time slider mounted under the sections after a search. */
+#dossier-panel .cre-dossier-imagery:empty {
+  display: none;
+}
+
+#dossier-panel .cre-dossier-imagery {
+  margin-top: 12px;
+}
+
+/* The slider's own styles assume a dark card; the dossier card is paper. */
+#dossier-panel .cre-timeslider__btn {
+  border-color: var(--cre-line);
+  background: #fff;
+  color: var(--cre-navy);
+  font-weight: 600;
+}
+
+#dossier-panel .cre-timeslider__btn:hover,
+#dossier-panel .cre-timeslider__btn:focus-visible {
+  background: #eef2f7;
+}
+
+#dossier-panel .cre-timeslider__btn[aria-pressed='true'] {
+  border-color: var(--cre-gold);
+  background: #f6ecd0;
+}
+
+/* A dark plate behind the header so the brand reads over bright imagery and
+   ring labels drawn near the top of the globe pass under it. */
+html[data-cre-mode='cre'] #title-bar {
+  top: 20px;
+  left: 24px;
+  padding: 8px 14px 10px;
+  border-radius: 8px;
+  background: rgba(9, 20, 36, 0.78);
+}
+
+html[data-cre-mode='cre'] #title-bar .title-glow {
+  display: none;
+}
+
+html[data-cre-mode='cre'] #title-bar .subtitle {
+  color: #d5deea;
+  letter-spacing: 3px;
+  margin-top: 4px;
+}
+
+@media (max-width: 520px) {
+  html[data-cre-mode='cre'] #title-bar {
+    top: 14px;
+    left: 16px;
+    padding: 0;
+    background: transparent;
+  }
+}
+
+/* Map key (B1-15): bottom right on a wide screen, one button top right on a phone. */
+#cre-map-legend.cre-legend {
+  position: fixed;
+  right: 12px;
+  bottom: 40px;
+  z-index: 40;
+  max-width: 270px;
+  padding: 6px 10px 8px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.88);
+  color: #f8fafc;
+  font:
+    12px/1.35 system-ui,
+    sans-serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+#cre-map-legend[hidden] {
+  display: none;
+}
+
+#cre-map-legend .cre-legend-toggle {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f5c451;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+#cre-map-legend .cre-legend-list {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+#cre-map-legend .cre-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 3px 0;
+}
+
+#cre-map-legend .cre-legend-swatch {
+  flex: 0 0 18px;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+#cre-map-legend .cre-legend-pin {
+  flex-basis: 14px;
+  width: 14px;
+  height: 14px;
+  margin: 0 2px;
+  border: 1px solid #fff;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: var(--swatch);
+}
+
+#cre-map-legend .cre-legend-dot {
+  flex-basis: 10px;
+  width: 10px;
+  height: 10px;
+  margin: 0 4px;
+  border-radius: 50%;
+  background: var(--swatch);
+}
+
+#cre-map-legend .cre-legend-dash {
+  height: 0;
+  border-top: 2px dashed var(--swatch);
+}
+
+#cre-map-legend .cre-legend-area {
+  height: 12px;
+  border: 1px solid var(--swatch);
+  background: color-mix(in srgb, var(--swatch) 45%, transparent);
+}
+
+#cre-map-legend .cre-legend-outline {
+  height: 12px;
+  border: 2px solid var(--swatch);
+}
+
+@media (max-width: 720px) {
+  #cre-map-legend.cre-legend {
+    top: 12px;
+    right: 8px;
+    bottom: auto;
+    max-width: min(270px, calc(100vw - 16px));
+    max-height: calc(35vh - 24px);
+    overflow-y: auto;
+  }
+
+  #cre-map-legend .cre-legend-toggle {
+    min-width: 44px;
+    min-height: 44px;
+    text-align: center;
+  }
+}
+
+/* Dossier views and the map workspace. Controls stay compact in the rail and
+   expand to comfortable touch targets on phones. */
+#dossier-panel .cre-dossier-views {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  position: sticky;
+  top: -10px;
+  z-index: 5;
+  overflow-x: visible;
+  max-width: 100%;
+  background: var(--cre-card, #fff);
+  gap: 4px;
+  margin: 0 0 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--cre-line);
+}
+
+#dossier-panel .cre-view-btn {
+  min-width: 0;
+  min-height: 32px;
+  padding: 4px 6px;
+  color: var(--cre-muted);
+  font: inherit;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-research-progress {
+  display: block;
+  width: 100%;
+  min-height: 34px;
+  margin: -3px 0 9px;
+  padding: 5px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: var(--cre-navy);
+  text-align: left;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-research-progress[hidden] {
+  display: none;
+}
+#dossier-panel .cre-research-progress:focus-visible {
+  outline: 2px solid var(--cre-gold);
+  outline-offset: 2px;
+}
+
+#dossier-panel .cre-view-btn[aria-pressed='true'] {
+  color: #fff;
+  background: var(--cre-navy);
+  border-color: var(--cre-navy);
+}
+
+#dossier-panel .cre-view-btn:focus-visible,
+#dossier-panel .cre-workspace-btn:focus-visible,
+#dossier-panel .cre-candidate-select:focus-visible,
+#dossier-panel .cre-candidate-delete:focus-visible,
+#dossier-panel .cre-ground-link:focus-visible {
+  outline: 2px solid var(--cre-gold);
+  outline-offset: 2px;
+}
+
+#dossier-panel [data-cre-view-content][hidden] {
+  display: none;
+}
+
+#dossier-panel .cre-summary-view,
+#dossier-panel .cre-dossier-sections,
+#dossier-panel .cre-dossier-workspace {
+  min-width: 0;
+}
+
+#dossier-panel .cre-glance {
+  border-left: 1px solid var(--cre-line);
+}
+
+#dossier-panel .cre-insight-context {
+  margin: 0 0 8px;
+  color: var(--cre-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+#dossier-panel .cre-insight-grid {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+#dossier-panel .cre-insight-card {
+  min-width: 0;
+  padding: 8px 9px;
+  border: 1px solid var(--cre-line);
+  border-radius: 7px;
+  background: var(--cre-card);
+}
+
+#dossier-panel .cre-insight-card.is-primary {
+  border-color: #c9a227;
+  box-shadow: 0 0 0 1px rgba(201, 162, 39, 0.14);
+}
+
+#dossier-panel .cre-insight-title {
+  margin: 0;
+  color: var(--cre-navy);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+#dossier-panel .cre-insight-question {
+  margin: 2px 0 5px;
+  color: var(--cre-muted);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+#dossier-panel .cre-insight-items {
+  display: grid;
+  gap: 4px;
+}
+#dossier-panel .cre-insight-item {
+  display: grid;
+  grid-template-columns: minmax(90px, 0.8fr) minmax(0, 1.5fr) auto;
+  gap: 4px 7px;
+  align-items: baseline;
+}
+#dossier-panel .cre-insight-label {
+  color: var(--cre-muted);
+  font-size: 11px;
+}
+#dossier-panel .cre-insight-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--cre-ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+#dossier-panel .cre-insight-status {
+  grid-column: 2 / -1;
+  color: var(--cre-muted);
+  font-size: 10px;
+}
+#dossier-panel .cre-insight-status-ready {
+  color: #166534;
+}
+#dossier-panel .cre-insight-status-partial,
+#dossier-panel .cre-insight-status-unavailable,
+#dossier-panel .cre-insight-status-unknown {
+  color: #92400e;
+}
+
+/* One "Sources (N)" disclosure per card, replacing a repeated per-row
+   source block: each distinct source cited by any row in the card, once,
+   with its link and retrieval date. */
+#dossier-panel .cre-insight-sources-summary {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--cre-line);
+}
+#dossier-panel .cre-insight-sources-summary > summary {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--cre-muted);
+  cursor: pointer;
+}
+#dossier-panel .cre-insight-source-list {
+  margin: 4px 0 0;
+  padding: 0 0 0 16px;
+  list-style: disc;
+}
+#dossier-panel .cre-insight-source-list li {
+  font-size: 10px;
+  overflow-wrap: anywhere;
+  margin: 2px 0;
+}
+#dossier-panel .cre-insight-source-list a {
+  color: #1d4ed8;
+}
+#dossier-panel .cre-insight-source-date {
+  color: var(--cre-muted);
+}
+#dossier-panel .cre-insight-key-action,
+#dossier-panel .cre-insight-detail {
+  grid-column: 2 / -1;
+  justify-self: start;
+  min-height: 30px;
+  padding: 2px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  color: var(--cre-navy);
+  background: white;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+#dossier-panel .cre-insight-next {
+  padding: 7px 9px;
+  border-left: 3px solid var(--cre-gold);
+  background: #f8f6ee;
+}
+#dossier-panel .cre-insight-next h4 {
+  margin: 0 0 3px;
+  font-size: 12px;
+  color: var(--cre-navy);
+}
+#dossier-panel .cre-insight-tasks {
+  margin: 0;
+  padding-left: 17px;
+  color: var(--cre-ink);
+  font-size: 11px;
+}
+#dossier-panel .cre-insight-tasks li + li {
+  margin-top: 2px;
+}
+#dossier-panel .cre-analysis-pane {
+  min-width: 0;
+}
+#dossier-panel .cre-update-list,
+#dossier-panel .cre-news-list {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 10px 0;
+}
+#dossier-panel .cre-topic-card {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--cre-line);
+  border-radius: 8px;
+  background: #fff;
+  overflow-wrap: anywhere;
+}
+#dossier-panel .cre-topic-title {
+  display: inline;
+  margin: 0 8px 0 0;
+  font-size: 13px;
+  color: var(--cre-navy);
+}
+#dossier-panel .cre-topic-status {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: #e9f1f6;
+  font-size: 11px;
+  color: var(--cre-navy);
+}
+#dossier-panel .cre-topic-date,
+#dossier-panel .cre-topic-note {
+  color: var(--cre-muted);
+  font-size: 11px;
+}
+#dossier-panel .cre-topic-finding {
+  margin: 6px 0 0;
+  line-height: 1.35;
+  font-size: 12px;
+}
+#dossier-panel .cre-topic-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 0;
+  font-size: 11px;
+}
+#dossier-panel .cre-refresh-warning {
+  color: #9a3412;
+  background: #fff7ed;
+  padding: 6px;
+  border-radius: 5px;
+  font-size: 11px;
+}
+#dossier-panel .cre-optional-research {
+  margin: 12px 0;
+  padding: 8px;
+  border: 1px solid var(--cre-line);
+  border-radius: 6px;
+}
+#dossier-panel .cre-optional-research summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
+}
+#dossier-panel .cre-optional-research:not([open]) .cre-analysis-slot {
+  display: none;
+}
+#dossier-panel .cre-back-to-top {
+  display: block;
+  width: 100%;
+  margin: 12px 0 0;
+  padding: 9px;
+  color: var(--cre-navy);
+  background: #f1f5f9;
+  border: 1px solid var(--cre-line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+#dossier-panel .cre-update-action {
+  margin: 4px 0;
+}
+#dossier-panel .cre-analysis-slot {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+#dossier-panel .cre-analysis-slot * {
+  max-width: 100%;
+}
+#dossier-panel .cre-analysis-hint {
+  color: var(--cre-muted);
+  margin: 0 0 8px;
+}
+#dossier-panel .cre-analysis-slot:empty::before {
+  content: 'Deeper research controls will appear here when available.';
+  color: var(--cre-muted);
+  font-size: 12px;
+}
+
+#dossier-panel .cre-workspace-title {
+  margin: 2px 0 5px;
+  color: var(--cre-navy);
+  font-size: 15px;
+}
+
+#dossier-panel .cre-location-state,
+#dossier-panel .cre-workspace-notice {
+  margin: 0 0 10px;
+  color: var(--cre-muted);
+  line-height: 1.4;
+}
+
+#dossier-panel .cre-control-row {
+  margin-bottom: 9px;
+}
+
+#dossier-panel .cre-control-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--cre-ink);
+  font-weight: 600;
+}
+
+#dossier-panel .cre-radius {
+  min-height: 34px;
+  padding: 4px 28px 4px 9px;
+  color: var(--cre-ink);
+  font: inherit;
+  background: #fff;
+  border: 1px solid #b9c2ce;
+  border-radius: 5px;
+}
+
+#dossier-panel .cre-radius-scope {
+  margin: 5px 0 0;
+  color: var(--cre-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+#dossier-panel .cre-workspace-actions,
+#dossier-panel .cre-ground-links,
+#dossier-panel .cre-candidate-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+#dossier-panel .cre-workspace-btn,
+#dossier-panel .cre-candidate-delete {
+  min-height: 34px;
+  padding: 5px 9px;
+  color: var(--cre-navy);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fff;
+  border: 1px solid #cbd2dc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-workspace-btn:disabled {
+  color: #687382;
+  background: #edf0f4;
+  cursor: default;
+}
+
+#dossier-panel .cre-ground-link {
+  color: #164f86;
+  font-size: 12px;
+  text-underline-offset: 2px;
+}
+
+#dossier-panel .cre-workspace-subtitle {
+  margin: 12px 0 6px;
+  color: var(--cre-navy);
+  font-size: 13px;
+}
+
+#dossier-panel .cre-map-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 8px 0;
+}
+#dossier-panel .cre-map-options label {
+  display: grid;
+  gap: 3px;
+  min-width: 120px;
+}
+#dossier-panel .cre-map-options select {
+  min-height: 34px;
+  max-width: 100%;
+  background: #fff;
+  border: 1px solid #cbd2dc;
+  border-radius: 5px;
+  color: var(--cre-ink);
+  font: inherit;
+}
+
+#dossier-panel .cre-layer-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 10px;
+}
+
+#dossier-panel .cre-layer {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 5px 0;
+  color: var(--cre-ink);
+  font-size: 12px;
+}
+
+#dossier-panel .cre-layer input,
+#dossier-panel .cre-candidate input {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  accent-color: var(--cre-navy-2);
+}
+
+#dossier-panel .cre-layer-label {
+  overflow-wrap: anywhere;
+}
+
+#dossier-panel .cre-layer-state {
+  color: var(--cre-muted);
+  font-size: 11px;
+}
+
+#dossier-panel .cre-candidate-list {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#dossier-panel .cre-candidate {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 5px 7px;
+  background: #fff;
+  border: 1px solid var(--cre-line);
+  border-radius: 5px;
+}
+
+#dossier-panel .cre-candidate-select {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 4px 0;
+  overflow-wrap: anywhere;
+  color: #164f86;
+  font: inherit;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+#dossier-panel .cre-candidate-select[aria-pressed='true'] {
+  color: var(--cre-navy);
+  font-weight: 700;
+}
+
+#dossier-panel .cre-candidate-delete {
+  min-height: 30px;
+  padding: 3px 7px;
+  font-size: 11px;
+}
+
+#dossier-panel .cre-empty-candidates {
+  padding: 8px 0;
+  color: var(--cre-muted);
+  font-size: 12px;
+}
+
+#dossier-panel .cre-workspace-notice:empty,
+#dossier-panel .cre-dossier-workspace-slot:empty {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  #dossier-panel .cre-research-progress {
+    min-height: 44px;
+  }
+
+  #dossier-panel .cre-dossier-views {
+    gap: 2px;
+    margin-bottom: 6px;
+  }
+
+  #dossier-panel .cre-view-btn {
+    min-height: 44px;
+    flex: 1 1 0;
+    padding: 3px 4px;
+    font-size: 11px;
+  }
+
+  #dossier-panel .cre-insight-grid {
+    gap: 5px;
+  }
+  #dossier-panel .cre-insight-card {
+    padding: 6px 7px;
+  }
+  #dossier-panel .cre-insight-question {
+    margin: 1px 0 3px;
+  }
+  #dossier-panel .cre-insight-item {
+    grid-template-columns: minmax(70px, 0.7fr) minmax(0, 1.3fr);
+    gap: 2px 5px;
+  }
+  #dossier-panel .cre-insight-status,
+  #dossier-panel .cre-insight-detail,
+  #dossier-panel .cre-insight-key-action {
+    grid-column: 2;
+  }
+  #dossier-panel .cre-research-progress {
+    min-height: 32px;
+    margin-bottom: 6px;
+  }
+
+  #dossier-panel .cre-layer-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #dossier-panel .cre-workspace-btn,
+  #dossier-panel .cre-candidate-delete {
+    min-height: 44px;
+  }
+}
+
+/* Phones (B1-11): every control in the dossier is at least 44 px tall. */
+@media (max-width: 720px) {
+  #dossier-panel .cre-btn,
+  #dossier-panel .cre-dossier-keys,
+  #dossier-panel .cre-dossier-collapse,
+  #dossier-panel .cre-section-head,
+  #dossier-panel .cre-glance-link,
+  #dossier-panel .cre-key-action,
+  #dossier-panel .cre-timeslider__btn,
+  #dossier-panel a {
+    min-height: 44px;
+  }
+
+  #dossier-panel .cre-dossier-collapse,
+  #dossier-panel .cre-timeslider__btn {
+    min-width: 44px;
+  }
+
+  #dossier-panel .cre-dossier-keys,
+  #dossier-panel a {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  html[data-cre-mode='cre'] #location-search.cre-address-input {
+    height: 44px;
+  }
+
+  #dossier-panel input[type='range'] {
+    min-height: 44px;
+  }
+}
+
+#dossier-panel .cre-dossier-workspace-slot {
+  padding: 12px 0;
+  color: var(--cre-ink, #17334d);
+  font-size: 13px;
+}
+#dossier-panel .cre-dossier-workspace-slot details {
+  margin: 12px 0;
+}
+#dossier-panel .cre-dossier-workspace-slot summary {
+  cursor: pointer;
+  font-weight: 650;
+  padding: 10px 0;
+}
+#dossier-panel .cre-dossier-workspace-slot label {
+  display: block;
+  margin: 10px 0;
+  font-weight: 600;
+}
+#dossier-panel .cre-dossier-workspace-slot input,
+#dossier-panel .cre-dossier-workspace-slot select,
+#dossier-panel .cre-dossier-workspace-slot textarea {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  margin: 5px 0 10px;
+  padding: 9px;
+  border: 1px solid #8a9dae;
+  border-radius: 5px;
+  background: #fff;
+  color: #17334d;
+  font: inherit;
+}
+#dossier-panel .cre-dossier-workspace-slot input::placeholder,
+#dossier-panel .cre-dossier-workspace-slot textarea::placeholder {
+  color: #566779;
+  opacity: 1;
+}
+#dossier-panel .cre-dossier-workspace-slot textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+#dossier-panel .cre-dossier-workspace-slot button {
+  min-height: 42px;
+  padding: 8px 12px;
+  border: 1px solid #8a9dae;
+  border-radius: 5px;
+  background: #fff;
+  color: #17334d;
+  cursor: pointer;
+  font: inherit;
+}
+#dossier-panel .cre-dossier-workspace-slot button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+#dossier-panel .cre-dossier-workspace-slot :focus-visible {
+  outline: 3px solid #186c91;
+  outline-offset: 2px;
+}
+
+#cre-map-legend .cre-legend-item[hidden] {
+  display: none;
+}
